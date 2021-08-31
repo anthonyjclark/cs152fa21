@@ -1,0 +1,21 @@
+name: cs152
+channels:
+  - conda-forge
+dependencies:
+  - fastai
+  - isort
+  - black
+  - ca-certificates
+  - certifi
+  - openssl
+  - ipykernel
+  - jupyter
+  - jupytext
+  - jupyter_contrib_nbextensions
+  - jupyterthemes
+  - nbdev
+  - streamlit
+  - seaborn
+  - pandas
+  - tensorboard
+prefix: /opt/mambaforge/envs/cs152
