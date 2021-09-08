@@ -1,13 +1,14 @@
 #!/opt/mambaforge/envs/cs152/bin/python
 
 """
-Run with: streamlit run lectures/l01-streamlit-demo.py --server.port 8920
+Run with: streamlit run lectures/l02-streamlit-SpoonOrFork.py --server.port 8920
 """
 
 from io import BytesIO
+from fastai.vision.all import *
 import requests
 import streamlit as st
-from fastai.vision.all import *
+import sys
 
 
 def predict(img):
@@ -15,14 +16,14 @@ def predict(img):
     pred, _, probs = learn_inf.predict(img)
 
     f"""
-    prediction = {pred}
+    prediction = {pred} with a probability of {probs.max()}%
 
     probabilities = {probs}
     """
 
 
-path = untar_data(URLs.MNIST)
-learn_inf = load_learner(path / "day1.pkl")
+path = Path(sys.argv[1])
+learn_inf = load_learner(path)
 
 option = st.radio("", ["Upload Image", "Image URL"])
 
