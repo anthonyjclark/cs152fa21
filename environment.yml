@@ -1,6 +1,7 @@
 name: cs152
 channels:
   - conda-forge
+  - fastchan
 dependencies:
   - fastai
   - isort
