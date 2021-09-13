@@ -13,6 +13,8 @@ from typing import Tuple
 
 
 MNIST_DGX01_PATH = "/raid/cs152/data/"
+MNIST_AUTOGRADER_PATH = "/autograder/source/tests/data/"
+DATA_PATH = None
 
 
 def get_mnist_subset_loader(train: bool, c1: int, c2: int) -> Tuple[DataLoader, int]:
@@ -37,7 +39,7 @@ def get_mnist_subset_loader(train: bool, c1: int, c2: int) -> Tuple[DataLoader, 
     )
 
     dataset = MNIST(
-        root=MNIST_DGX01_PATH, train=train, download=True, transform=mnist_transforms
+        root=DATA_PATH, train=train, download=True, transform=mnist_transforms
     )
 
     # Grab indices for the two classes we care about
@@ -214,10 +216,16 @@ def main():
     arg_parser.add_argument("lr", type=float, help="Training learning rate.")
     arg_parser.add_argument("--seed", type=int, help="Seed for random numbers.")
     arg_parser.add_argument(
+        "--gradescope", action="store_true", help="Use settings for the autograder."
+    )
+    arg_parser.add_argument(
         "--noprint", action="store_true", help="Disable periodic output."
     )
 
     args = arg_parser.parse_args()
+
+    global DATA_PATH
+    DATA_PATH = MNIST_AUTOGRADER_PATH if args.gradescope else MNIST_DGX01_PATH
 
     if args.seed != None:
         torch.manual_seed(args.seed)
