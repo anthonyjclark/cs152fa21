@@ -31,6 +31,8 @@
 
 # %%
 import torch
+import torchvision
+import pandas as pd
 
 # %%
 torch.rand(5)
@@ -70,9 +72,6 @@ Z.shape
 Y @ Z
 
 # %%
-import torchvision
-
-# %%
 # MNIST : hello world
 # EMNIST : extended with letters in addition to digits
 # KMNIST : Kuzushiji, Japanese characters
@@ -103,6 +102,22 @@ image.shape
 
 # %%
 label.shape, label
+
+# %%
+image
+
+# %%
+mnist_avg, mnist_std = 0.130, 0.3081
+
+image = torch.as_tensor((image * mnist_std + mnist_avg) * 255, dtype=torch.uint8)
+image
+
+# %%
+image_df = pd.DataFrame(image.squeeze().numpy())
+image_df
+
+# %%
+image_df.style.set_properties(**{'font-size':'6pt'}).background_gradient('Greys')
 
 # %%
 import matplotlib.pyplot as plt
