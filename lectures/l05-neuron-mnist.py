@@ -132,6 +132,9 @@ for axis, (image, label) in zip(axes, train_loader):
     axis.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
     axis.set_title(f"Label: {label[0]}")
 
+# %% [markdown]
+# # A Single Neuron Model
+
 # %%
 # Simple single neuron model; sometimes called logistic regression
 
@@ -179,6 +182,9 @@ def sigmoid(z):
 # %%
 sigmoid(linear(weights, bias, x))
 
+# %% [markdown]
+# # Let's Focus on Binary Classification
+
 # %%
 # Get down to two classes (let them pick)
 
@@ -204,6 +210,9 @@ for axis, (image, label) in zip(axes, train_loader2):
     axis.imshow(image.squeeze(), cmap="Greys")
     axis.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
     axis.set_title(f"Label: {label[0]}")
+
+# %% [markdown]
+# # Using Our Derived Equations
 
 # %%
 from time import time
@@ -261,6 +270,9 @@ for epoch in range(num_epochs):
         f"{epoch+1:>2}/{num_epochs}, Cost={cost[0][0]:0.1f}, Time={time()-start:0.1f}s"
     )
 
+# %% [markdown]
+# # Let's Compute All At Once (Batch GD)
+
 # %%
 # Set the batch size to be equal to the size of the training dataset
 train_loader2All = torch.utils.data.DataLoader(
@@ -307,6 +319,9 @@ for epoch in range(num_epochs):
     bias -= learning_rate * bias_derivative
 
     print(f"{epoch+1:>2}/{num_epochs}, Cost={cost:0.1f}, Time={time()-start:0.1f}s")
+
+# %% [markdown]
+# # Is This Better? Need a Metric
 
 # %%
 # Create the validation dataset
@@ -415,5 +430,3 @@ x = 1 - (torch.round(valid_predictions) - valid_targets).sum()/valid_size
 
 # %%
 f"Accuracy={x:.2f}"
-
-# %%
