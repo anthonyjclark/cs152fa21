@@ -147,3 +147,5 @@ assert torch.allclose(db1, b1Auto.grad)
 # - Adding additional layers
 # - Changing the loss function
 # - Changing the activation function(s)
+
+# %%
