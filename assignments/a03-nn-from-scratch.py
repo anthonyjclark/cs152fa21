@@ -18,6 +18,10 @@ def initialize_parameters(
 
     Returns:
         Tuple[Tensor, Tensor, Tensor, Tensor]: weights and biases for 2 layers
+            W1 : (n1, n0)
+            b1 : (n1)
+            W2 : (n2, n1)
+            b2 : (n2)
     """
     # TODO: initialize and return W1, b1, W2, and b2
 
@@ -30,9 +34,9 @@ def forward_propagation(
     Args:
         A0 (Tensor): (N, n0) input matrix (aka X)
         W1 (Tensor): (n1, n0) layer 1 weight matrix
-        b1 (Tensor): (n1, 1) layer 1 bias matrix
+        b1 (Tensor): (n1) layer 1 bias matrix
         W2 (Tensor): (n2, n1) layer 2 weight matrix
-        b2 (Tensor): (n2, 1) layer 2 bias matrix
+        b2 (Tensor): (n2) layer 2 bias matrix
 
     Returns:
         Tuple[Tensor, Tensor]: outputs for layers 1 (N, n1) and 2 (N, n2)
@@ -85,13 +89,13 @@ def update_parameters(
 
     Args:
         W1 (Tensor): (n1, n0) weight matrix
-        b1 (Tensor): (n1, 1) bias matrix)
+        b1 (Tensor): (n1) bias matrix)
         W2 (Tensor): (n2, n1) weight matrix)
-        b2 (Tensor): (n2, 1) bias matrix
+        b2 (Tensor): (n2) bias matrix
         dW1 (Tensor): (n1, n0) gradient matrix
-        db1 (Tensor): (n1, 1) gradient matrix)
+        db1 (Tensor): (n1) gradient matrix)
         dW2 (Tensor): (n2, n1) gradient matrix)
-        db2 (Tensor): (n2, 1) gradient matrix
+        db2 (Tensor): (n2) gradient matrix
         lr (float): learning rate
 
     Returns:
@@ -113,7 +117,7 @@ def compute_loss(A2: Tensor, Y: Tensor) -> Tensor:
     # TODO: implement this function
 
 
-def learn_2layer(
+def train_2layer(
     X: Tensor,
     Y: Tensor,
     num_hidden: int,
@@ -143,5 +147,3 @@ def learn_2layer(
     #   3. compute gradients with backward propagation
     #   4. update parameters
     # 3. return final parameters
-
-    return W1, b1, W2, b2
