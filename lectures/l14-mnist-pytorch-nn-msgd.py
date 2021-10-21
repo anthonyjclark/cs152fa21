@@ -220,6 +220,8 @@ with stopwatch(f"\nDone! Total time for {num_epochs} epochs"):
 # - Describe each part of `(output.argmax(1) == Y).type(torch.float).sum().item()`
 # - What happens when you rerun the training cell for additional epoch (without rerunning any other cells)?
 # - What happens to if force device to be `"cpu"`?
+# - How could you make this code run "stochastic gradient descent"?
+# - How could you make this code run "batch gradient descent"?
 
 # %% [markdown]
 # # Things to explore
