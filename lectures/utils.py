@@ -5,6 +5,7 @@ from timeit import default_timer as timer
 from typing import Tuple
 
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader, SubsetRandomSampler, TensorDataset
 
 from torchvision.datasets import MNIST
@@ -100,6 +101,42 @@ def get_binary_mnist_one_batch(path: str, A: int, B: int, flatten: bool):
 
     return train_x, train_y, valid_x, valid_y
 
+def get_mnist_data_loaders(path, batch_size, valid_batch_size):
+
+    # MNIST specific transforms
+    image_xforms = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
+
+    # Training data loader
+    train_dataset = MNIST(root=path, train=True, download=True, transform=image_xforms)
+
+    tbs = len(train_dataset) if batch_size == 0 else batch_size
+    train_loader = DataLoader(train_dataset, batch_size=tbs, shuffle=True)
+
+    # Validation data loader
+    valid_dataset = MNIST(root=path, train=False, download=True, transform=image_xforms)
+
+    vbs = len(valid_dataset) if valid_batch_size == 0 else valid_batch_size
+    valid_loader = DataLoader(valid_dataset, batch_size=vbs, shuffle=True)
+
+    return train_loader, valid_loader
+
+class NN_FC_CrossEntropy(nn.Module):
+    def __init__(self, layer_sizes):
+        super(NN_FC_CrossEntropy, self).__init__()
+
+        first_layer = nn.Flatten()
+        middle_layers = [
+            nn.Sequential(nn.Linear(nlminus1, nl), nn.ReLU())
+            for nl, nlminus1 in zip(layer_sizes[1:-1], layer_sizes)
+        ]
+        last_layer = nn.Linear(layer_sizes[-2], layer_sizes[-1])
+
+        all_layers = [first_layer] + middle_layers + [last_layer]
+
+        self.layers = nn.Sequential(*all_layers)
+
+    def forward(self, X):
+        return self.layers(X)
 
 def format_duration_with_prefix(duration, sig=2):
     # Round to significant digits
