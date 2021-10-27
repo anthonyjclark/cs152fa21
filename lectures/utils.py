@@ -27,12 +27,12 @@ def get_binary_mnist_dataloader(
     # Convert images to normalized tensors with mean 0 and standard deviation 1
     image_xforms = Compose(
         [
-            ConvertImageDtype(torch.float),#ToTensor(),
+            ConvertImageDtype(torch.float),  # ToTensor(),
             Normalize((0.1307,), (0.3081,)),
         ]
     )
 
-    dataset = MNIST(root=path, train=train, download=True)#, transform=image_xforms)
+    dataset = MNIST(root=path, train=train, download=True)  # , transform=image_xforms)
 
     # Grab indices for the two requested classes
     idx_classA = [i for i, t in enumerate(dataset.targets) if t == A]
@@ -101,6 +101,7 @@ def get_binary_mnist_one_batch(path: str, A: int, B: int, flatten: bool):
 
     return train_x, train_y, valid_x, valid_y
 
+
 def get_mnist_data_loaders(path, batch_size, valid_batch_size):
 
     # MNIST specific transforms
@@ -120,6 +121,7 @@ def get_mnist_data_loaders(path, batch_size, valid_batch_size):
 
     return train_loader, valid_loader
 
+
 class NN_FC_CrossEntropy(nn.Module):
     def __init__(self, layer_sizes):
         super(NN_FC_CrossEntropy, self).__init__()
@@ -137,6 +139,7 @@ class NN_FC_CrossEntropy(nn.Module):
 
     def forward(self, X):
         return self.layers(X)
+
 
 def format_duration_with_prefix(duration, sig=2):
     # Round to significant digits
@@ -159,3 +162,15 @@ def stopwatch(label: str):
         yield
     finally:
         print(f"{label}: {timer() - start:6.2f}s")
+
+
+class DataLoaderProgress(object):
+    def __init__(self, dataloader):
+        self.dataloader = dataloader
+        self.length = len(dataloader)
+
+    def __iter__(self):
+        return zip(range(self.length), self.dataloader)
+
+    def __len__(self):
+        return self.length
