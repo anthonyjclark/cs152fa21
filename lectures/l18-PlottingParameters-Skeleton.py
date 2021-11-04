@@ -68,12 +68,18 @@ class CustomNeuron(nn.Module):
         super(CustomNeuron, self).__init__()
         # The network should assume that the model input is (28 pixels) and
         # that there is one output neuron
-        self.layers = ...
+        self.layers = nn.Sequential(nn.Linear(28, 1), nn.Sigmoid())
 
     def forward(self, X):
         # The X value is (N, 28, 28)
-        modified_X = ...
+        modified_X = X[:, 9, :]
         return self.layers(modified_X)
+
+
+# %%
+X = full_train_loader.dataset.data
+# X[:, 9, :].shape
+torch.all(X.view(-1, 784)[:, 9*28:9*28+28] == X[:, 9, :])
 
 
 # %%
@@ -151,7 +157,7 @@ weight_decay = 0#1e-3
 momentum = 0#0.9
 
 # Training device
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu" # "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using '{device}' device.")
 
 # %%
@@ -192,7 +198,7 @@ for epoch in mb:
     )
 
 # %%
-w_index = 0
+w_index = 14
 
 w_orig = model.layers[0].weight[0][w_index].item()
 l_orig = tloss
@@ -226,3 +232,5 @@ axes[0].set_title("Parameter vs Accuracy")
 axes[1].plot(w_values, losses)
 axes[1].plot(w_orig, l_orig, "o", color="pink")
 axes[1].set_title("Parameter vs Loss")
+
+# %%

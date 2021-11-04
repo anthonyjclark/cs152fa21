@@ -41,3 +41,18 @@ plt.plot(x, y)
 plt.plot(x, y_ema)
 
 # %%
+y_ema_corrected = [0]
+beta = 0.9
+
+for t, yval in enumerate(y):
+    new_y_ema = beta * y_ema_corrected[-1] + (1 - beta) * yval
+    new_y_ema_t = new_y_ema / (1 - beta ** (t + 1))
+    y_ema_corrected.append(new_y_ema)
+
+plt.plot(x, torch.sin(x), label='True')
+plt.plot(x, y, label='Noisy')
+plt.plot(x, y_ema, label='EMA with Bias')
+plt.plot(x, y_ema_corrected[1:], label='EMA Corrected')
+plt.legend()
+
+# %%

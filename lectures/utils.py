@@ -8,9 +8,14 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, SubsetRandomSampler, TensorDataset
 
+# +
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, ConvertImageDtype, Normalize, ToTensor
 
+from fastprogress.fastprogress import progress_bar
+
+
+# -
 
 def mnist_target_to_binary(target, B):
     """Convert target digits into a zeros (class A) and ones (class B)."""
@@ -139,6 +144,55 @@ class NN_FC_CrossEntropy(nn.Module):
 
     def forward(self, X):
         return self.layers(X)
+
+
+def compute_validation_accuracy_multi(dataloader, model, criterion, device, mb, epoch):
+
+    model.eval()
+
+    N = len(dataloader.dataset)
+    num_batches = len(dataloader)
+
+    valid_loss, num_correct = 0, 0
+
+    with torch.no_grad():
+
+        for X, Y in dataloader:
+
+            X, Y = X.to(device), Y.to(device)
+            output = model(X)
+
+            valid_loss += criterion(output, Y).item()
+            num_correct += (output.argmax(1) == Y).type(torch.float).sum().item()
+
+        valid_loss /= num_batches
+        valid_accuracy = num_correct / N
+
+    mb.write(
+        f"{epoch:>3}: validation accuracy={(100*valid_accuracy):5.2f}% and loss={valid_loss:.3f}"
+    )
+    return valid_loss, valid_accuracy
+
+
+def train_one_epoch(dataloader, model, criterion, optimizer, device, mb):
+
+    model.train()
+
+    num_batches = len(dataloader)
+    dataiter = iter(dataloader)
+
+    for batch in progress_bar(range(num_batches), parent=mb):
+
+        X, Y = next(dataiter)
+        X, Y = X.to(device), Y.to(device)
+
+        output = model(X)
+
+        loss = criterion(output, Y)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
 
 def format_duration_with_prefix(duration, sig=2):
