@@ -128,12 +128,12 @@ def get_mnist_data_loaders(path, batch_size, valid_batch_size):
 
 
 class NN_FC_CrossEntropy(nn.Module):
-    def __init__(self, layer_sizes):
+    def __init__(self, layer_sizes, activation=nn.ReLU):
         super(NN_FC_CrossEntropy, self).__init__()
 
         first_layer = nn.Flatten()
         middle_layers = [
-            nn.Sequential(nn.Linear(nlminus1, nl), nn.ReLU())
+            nn.Sequential(nn.Linear(nlminus1, nl), activation())
             for nl, nlminus1 in zip(layer_sizes[1:-1], layer_sizes)
         ]
         last_layer = nn.Linear(layer_sizes[-2], layer_sizes[-1])
