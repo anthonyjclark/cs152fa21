@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, SubsetRandomSampler, TensorDataset
 
 # +
-from torchvision.datasets import MNIST
+from torchvision.datasets import MNIST, CIFAR10
 from torchvision.transforms import Compose, ConvertImageDtype, Normalize, ToTensor
 
 from fastprogress.fastprogress import progress_bar
@@ -121,6 +121,25 @@ def get_mnist_data_loaders(path, batch_size, valid_batch_size):
     # Validation data loader
     valid_dataset = MNIST(root=path, train=False, download=True, transform=image_xforms)
 
+    vbs = len(valid_dataset) if valid_batch_size == 0 else valid_batch_size
+    valid_loader = DataLoader(valid_dataset, batch_size=vbs, shuffle=True)
+
+    return train_loader, valid_loader
+
+
+def get_cifar10_data_loaders(path, batch_size, valid_batch_size):
+
+    std = (0.4941, 0.4870, 0.5232)
+    mean = (-0.0172, -0.0357, -0.1069)
+    image_xforms = Compose([ToTensor(), Normalize(mean, std)])
+    
+    train_dataset = CIFAR10(root=path, train=True, download=True, transform=image_xforms)
+    
+    tbs = len(train_dataset) if batch_size == 0 else batch_size
+    train_loader = DataLoader(train_dataset, batch_size=tbs, shuffle=True)
+
+    valid_dataset = CIFAR10(root=path, train=False, download=True, transform=image_xforms)
+    
     vbs = len(valid_dataset) if valid_batch_size == 0 else valid_batch_size
     valid_loader = DataLoader(valid_dataset, batch_size=vbs, shuffle=True)
 
