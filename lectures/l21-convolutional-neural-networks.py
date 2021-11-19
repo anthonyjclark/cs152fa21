@@ -39,14 +39,13 @@ data_path = "../data"
 seed = 0
 torch.manual_seed(seed)
 
-# Hyperparameters
-num_epochs = 4
+# Hyperparameters (other built in to criterion and optimizer)
+num_epochs = 3
 batch_size = 128
 valid_batch_size = 0
-# The optimizer includes default hyperparameter values
 
 # Training device
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu" #"cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using '{device}' device.")
 
 # %%
@@ -58,10 +57,10 @@ train_loader, valid_loader = get_cifar10_data_loaders(
 train_loader.dataset.data.shape, valid_loader.dataset.data.shape, train_loader.dataset.classes
 
 # %%
-X, y = next(iter(train_loader))
-X.shape, y.shape
-
-# %%
+# This is how I came up with the normalization values in utils
+# tl, _ = get_cifar10_data_loaders(data_path, 0, 0)
+# X, y = next(iter(tl))
+# X.shape, y.shape
 # torch.std_mean(X, dim=(0, 2, 3))
 
 # %%
@@ -75,6 +74,7 @@ image_grid = make_grid(images.permute(0, 3, 1, 2))
 
 _, axis = plt.subplots(figsize=(16, 16))
 axis.imshow(image_grid.permute(1, 2, 0))
+axis.grid(None)
 
 targets = train_loader.dataset.targets[:n]
 classes = train_loader.dataset.classes
@@ -88,8 +88,6 @@ for row in range(images_per_row):
     print(" ".join(labels[start_index : start_index + images_per_row]))
 
 # %%
-
-# %%
 # model = nn.Sequential(nn.Flatten(), nn.Linear(3 * 32 * 32, 10))
 
 # nx = torch.prod(torch.tensor(train_loader.dataset.data.shape[1:]))
@@ -97,8 +95,8 @@ for row in range(images_per_row):
 # layer_sizes = (nx, 20, 20, ny)
 # model = NN_FC_CrossEntropy(layer_sizes, torch.nn.Sigmoid).to(device)
 
-model = resnet18()
-model.fc = nn.Linear(in_features=512, out_features=10, bias=True)
+model = resnet18(num_classes=10)
+# model.fc = nn.Linear(in_features=512, out_features=10, bias=True)
 
 model.to(device)
 
@@ -151,5 +149,15 @@ for i, cls in enumerate(classes):
     ctotal = class_total[i]
     caccuracy = ccorrect / ctotal
     print(f"  Accuracy on {cls:>10} class: {ccorrect}/{ctotal} = {caccuracy*100:.2f}%")
+
+# %%
+from fastai.vision.all import untar_data, URLs, ImageDataLoaders, cnn_learner, xresnet18, accuracy
+path = untar_data(URLs.CIFAR)
+dls = ImageDataLoaders.from_folder(path, valid="test", bs=batch_size)
+learn = cnn_learner(dls, xresnet18, metrics=accuracy)
+learn.fine_tune(num_epochs)
+
+# %%
+learn.model
 
 # %%

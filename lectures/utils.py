@@ -127,10 +127,13 @@ def get_mnist_data_loaders(path, batch_size, valid_batch_size):
     return train_loader, valid_loader
 
 
+# +
 def get_cifar10_data_loaders(path, batch_size, valid_batch_size):
 
-    std = (0.4941, 0.4870, 0.5232)
-    mean = (-0.0172, -0.0357, -0.1069)
+#     std = (0.4941, 0.4870, 0.5232)
+#     mean = (-0.0172, -0.0357, -0.1069)
+    std = (0.2470, 0.2435, 0.2616)
+    mean =(0.4914, 0.4822, 0.4465)
     image_xforms = Compose([ToTensor(), Normalize(mean, std)])
     
     train_dataset = CIFAR10(root=path, train=True, download=True, transform=image_xforms)
@@ -145,6 +148,8 @@ def get_cifar10_data_loaders(path, batch_size, valid_batch_size):
 
     return train_loader, valid_loader
 
+
+# -
 
 class NN_FC_CrossEntropy(nn.Module):
     def __init__(self, layer_sizes, activation=nn.ReLU):
