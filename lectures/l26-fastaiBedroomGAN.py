@@ -20,6 +20,11 @@
 # %%
 from fastai.vision.all import *
 from fastai.vision.gan import *
+import torch
+
+# %%
+# Setting this to device 2 because it is not in use
+torch.cuda.set_device(2)
 
 # %%
 path = untar_data(URLs.LSUN_BEDROOMS)
